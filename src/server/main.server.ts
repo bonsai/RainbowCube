@@ -4,6 +4,7 @@ import { ReplicatedStorage } from "@rbxts/services";
 import { GridManager } from "./grid";
 import { Match3Manager } from "./match3";
 import { SwapBlocksArgs } from "shared/types";
+import { AUTO_START_GAME } from "shared/constants";
 
 // GridManagerとMatch3Managerを初期化
 const gridManager = new GridManager();
@@ -61,10 +62,11 @@ initGameEvent.OnServerEvent.Connect((player) => {
 // サーバー起動
 print("🌈 Rainbow Cube Match-3 Server Starting...");
 
-// [DEV] テスト用に自動的にゲームを初期化
-print("[DEV] Auto-starting game for testing...");
-task.wait(2); // サーバー起動待ち
-match3Manager.initializeGame();
+if (AUTO_START_GAME) {
+	print("[DEV] Auto-starting game (configured in constants)...");
+	task.wait(2); // サーバー起動待ち
+	match3Manager.initializeGame();
+}
 
 print("✓ Server ready!");
 print("✓ Waiting for players to start the game...");

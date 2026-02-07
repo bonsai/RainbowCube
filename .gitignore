@@ -2,7 +2,7 @@
 .rojo-state
 
 # Compiled output
-out/
+# out/
 
 # Build output
 *.rbxlx
