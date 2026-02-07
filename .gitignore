@@ -1,0 +1,21 @@
+# Rojo state file
+.rojo-state
+
+# Compiled output
+out/
+
+# Build output
+*.rbxlx
+*.rbxl
+
+# Node modules
+node_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+.bin/

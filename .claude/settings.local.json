@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rojo build:*)",
+      "Bash(rojo serve:*)",
+      "Bash(timeout /t 2)",
+      "Bash(start \"\" \"RainbowCube.rbxlx\")",
+      "Bash(powershell -Command:*)",
+      "Bash(powershell -File:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -File open-studio.ps1:*)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command:*)",
+      "Bash(powershell:*)",
+      "Bash(cmd /c \"dir /s /b \"\"%LOCALAPPDATA%\\\\Roblox\\\\Versions\\\\RobloxStudioBeta.exe\"\" 2>nul | sort /r | head -1\")",
+      "Bash(taskkill:*)",
+      "Bash(tasklist:*)",
+      "Bash(cmd //c start \"\" \"C:\\\\Users\\\\dance\\\\AppData\\\\Local\\\\Roblox\\\\Versions\\\\version-207b4196e6334893\\\\RobloxStudioBeta.exe\" \"C:\\\\Users\\\\dance\\\\zone\\\\虹のキューブ\\\\RainbowCube.rbxl\")",
+      "Bash(npm install:*)",
+      "Bash(npx rbxtsc:*)",
+      "Bash(timeout 3 cmd:*)",
+      "Bash(dir:*)"
+    ]
+  }
+}

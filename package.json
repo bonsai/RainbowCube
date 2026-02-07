@@ -1,0 +1,26 @@
+{
+  "name": "rainbow-cube",
+  "version": "1.0.0",
+  "description": "Rainbow Tower Builder - Roblox TypeScript Game",
+  "main": "out/init.server.lua",
+  "scripts": {
+    "build": "rbxtsc",
+    "watch": "rbxtsc -w",
+    "dev": "rbxtsc -w"
+  },
+  "keywords": [
+    "roblox",
+    "roblox-ts",
+    "game"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@rbxts/compiler-types": "latest",
+    "@rbxts/types": "latest",
+    "roblox-ts": "latest"
+  },
+  "dependencies": {
+    "@rbxts/services": "^1.6.0"
+  }
+}
