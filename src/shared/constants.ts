@@ -36,4 +36,4 @@ export const BLOCKS_PER_LAYER = GRID_SIZE * GRID_SIZE;
 export const GRID_CENTER_POSITION = new Vector3(0, 0, 0);
 
 /** [DEV] サーバー起動時に自動でゲームを開始するか（デバッグ用） */
-export const AUTO_START_GAME = true;
+export const AUTO_START_GAME = false;
