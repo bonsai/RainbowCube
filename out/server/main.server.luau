@@ -4,6 +4,7 @@ local TS = require(game:GetService("ReplicatedStorage"):WaitForChild("rbxts_incl
 local ReplicatedStorage = TS.import(script, game:GetService("ReplicatedStorage"), "node_modules", "@rbxts", "services").ReplicatedStorage
 local GridManager = TS.import(script, game:GetService("ServerScriptService"), "Server", "grid").GridManager
 local Match3Manager = TS.import(script, game:GetService("ServerScriptService"), "Server", "match3").Match3Manager
+local AUTO_START_GAME = TS.import(script, game:GetService("ReplicatedStorage"), "Shared", "constants").AUTO_START_GAME
 -- GridManagerとMatch3Managerを初期化
 local gridManager = GridManager.new()
 local match3Manager = Match3Manager.new(gridManager)
@@ -51,9 +52,10 @@ initGameEvent.OnServerEvent:Connect(function(player)
 end)
 -- サーバー起動
 print("🌈 Rainbow Cube Match-3 Server Starting...")
--- [DEV] テスト用に自動的にゲームを初期化
-print("[DEV] Auto-starting game for testing...")
-task.wait(2)
-match3Manager:initializeGame()
+if AUTO_START_GAME then
+	print("[DEV] Auto-starting game (configured in constants)...")
+	task.wait(2)
+	match3Manager:initializeGame()
+end
 print("✓ Server ready!")
 print("✓ Waiting for players to start the game...")

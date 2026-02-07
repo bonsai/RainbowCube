@@ -116,6 +116,7 @@ do
 		button.TextColor3 = Color3.new(1, 1, 1)
 		button.TextSize = 32
 		button.Font = Enum.Font.SourceSansBold
+		button.ZIndex = 10
 		button.Visible = true
 		button.Parent = self.screenGui
 		-- ボタンのホバー効果

@@ -134,6 +134,7 @@ export class UIManager {
 		button.TextColor3 = new Color3(1, 1, 1);
 		button.TextSize = 32;
 		button.Font = Enum.Font.SourceSansBold;
+		button.ZIndex = 10;
 		button.Visible = true;
 		button.Parent = this.screenGui;
 
