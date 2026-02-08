@@ -1,0 +1,9 @@
+{
+  "name": "RainbowDebugPlugin",
+  "tree": {
+    "$className": "Folder",
+    "RainbowDebugPlugin": {
+      "$path": "plugin.server.lua"
+    }
+  }
+}
