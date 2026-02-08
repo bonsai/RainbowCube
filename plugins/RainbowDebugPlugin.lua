@@ -1,11 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<roblox xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <Item class="Script" referent="RBX6B0C4A1A5">
-    <Properties>
-      <Name>RainbowDebugPlugin</Name>
-      <ClassName>Script</ClassName>
-      <Disabled>false</Disabled>
-      <LinkedSource>local Plugin = {}
+-- RainbowCube Debug Tools - Lua Plugin
+-- All-in-one debugging and development tools for Roblox/Lua
+
+local Plugin = {}
 local Tools = {}
 
 -- Configuration
@@ -18,7 +14,7 @@ Plugin.Config = {
 
 -- Initialize
 function Plugin:Initialize()
-    print("✨ RainbowCube Debug Tools Initialized")
+    print("🌈 RainbowCube Debug Tools Initialized")
     print("📋 Available Tools:")
     print("  1. Luau Execution Test")
     print("  2. Development Loop Evaluation")
@@ -95,7 +91,7 @@ function Tools:EvaluateLoop()
     print("\n1. 📝 Specification (Expectation)")
     print("   - Grid: " .. specs.GridSize)
     print("   - Trigger: " .. specs.Action)
-    print("   - Success Criteria: Log contains ''" .. specs.LogSuccessPattern .. "'")
+    print("   - Success Criteria: Log contains '" .. specs.LogSuccessPattern .. "'")
     
     -- Code Analysis
     local codeStatus = {
@@ -274,7 +270,7 @@ function Tools:CheckEnvironment()
     }
     
     for _, path in ipairs(paths) do
-        local found = os.execute("Get-ChildItem -Path ''" .. path .. "' -ErrorAction SilentlyContinue | Select-Object -First 1")
+        local found = os.execute("Get-ChildItem -Path '" .. path .. "' -ErrorAction SilentlyContinue | Select-Object -First 1")
         if found == 0 then
             studioPath = path
             break
@@ -330,8 +326,4 @@ function Plugin:Run(toolName)
 end
 
 -- Export
-return Plugin</Source>
-    </Properties>
-    <Children />
-  </Item>
-</roblox>
+return Plugin

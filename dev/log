@@ -1,0 +1,85 @@
+  17:48:42.867  Hello world, from server!  -  Server - Server:1
+  17:48:42.869  Workspace.RainbowDebugPlugin.RainbowDebugPlugin:2: attempt to index nil with 'CreateToolbar'  -  Server - RainbowDebugPlugin:2
+  17:48:42.870  Stack Begin  -  Studio
+  17:48:42.870  Script 'Workspace.RainbowDebugPlugin.RainbowDebugPlugin', Line 2  -  Studio - RainbowDebugPlugin:2
+  17:48:42.870  Stack End  -  Studio
+  17:48:42.870  Workspace.RainbowDebugPlugin.RainbowDebugPlugin:2: attempt to index nil with 'CreateToolbar'  -  Server - RainbowDebugPlugin:2
+  17:48:42.870  Stack Begin  -  Studio
+  17:48:42.870  Script 'Workspace.RainbowDebugPlugin.RainbowDebugPlugin', Line 2  -  Studio - RainbowDebugPlugin:2
+  17:48:42.870  Stack End  -  Studio
+  17:48:43.033  Hello world, from client!  -  Client - Client:1
+  17:48:43.047  === 🌈 Rainbow Cube Debug Check ===  -  Server
+  17:48:43.048  📂 Found 'Server' folder in ServerScriptService  -  Server
+  17:48:43.048  ❌ Grid Module: NOT Found in Server  -  Server
+  17:48:43.048  ❌ Main Script: NOT Found in Server  -  Server
+  17:48:43.048     --- Contents of ServerScriptService.Server ---  -  Server
+  17:48:43.048  ✅ rbxts_include: Found (Folder)  -  Server
+  17:48:43.048  ❌ SwapBlocksEvent: NOT Found in ReplicatedStorage  -  Server
+  17:48:43.048  === Check Complete ===  -  Server
+  17:48:43.530  === 🌈 Rainbow Cube Debug Check ===  -  Client
+  17:48:43.530  ❓ 'Server' folder not found in ServerScriptService  -  Client
+  17:48:43.530     --- Contents of ServerScriptService ---  -  Client
+  17:48:43.530  ✅ rbxts_include: Found (Folder)  -  Client
+  17:48:43.530  ❌ SwapBlocksEvent: NOT Found in ReplicatedStorage  -  Client
+  17:48:43.530  === Check Complete ===  -  Client
+  17:48:47.880  Infinite yield possible on 'ReplicatedStorage:WaitForChild("InitGameEvent")'  -  Studio
+  17:48:47.880  Stack Begin  -  Studio
+  17:48:47.880  Script 'ServerScriptService.Tests.debug-game-start', Line 9  -  Studio - debug-game-start:9
+  17:48:47.880  Stack End  -  Studio
+  17:48:47.881  Infinite yield possible on 'ServerScriptService.Server:WaitForChild("grid")'  -  Studio
+  17:48:47.881  Stack Begin  -  Studio
+  17:48:47.881  Script 'ReplicatedStorage.rbxts_include.RuntimeLib', Line 53 - function import  -  Studio - RuntimeLib:53
+  17:48:47.881  Script 'ServerScriptService.Server.main', Line 5  -  Studio - main:5
+  17:48:47.881  Stack End  -  Studio
+  17:48:48.048  Infinite yield possible on 'ReplicatedStorage:WaitForChild("SwapBlocksEvent")'  -  Studio
+  17:48:48.048  Stack Begin  -  Studio
+  17:48:48.048  Script 'Players.v0n5sai.PlayerScripts.Client.input', Line 22 - function constructor  -  Studio - input:22
+  17:48:48.048  Script 'Players.v0n5sai.PlayerScripts.Client.input', Line 16 - function new  -  Studio - input:16
+  17:48:48.048  Script 'Players.v0n5sai.PlayerScripts.Client.main', Line 21  -  Studio - main:21
+  17:48:48.048  Stack End  -  Studio
+  17:48:53.715  [UI] Game started!  -  Client - ui:143
+  17:49:08.330  
+=== 🌈 Rainbow Cube Debug Check (Plugin) ===  -  Client
+  17:49:08.330  ❓ 'Server' folder not found in ServerScriptService  -  Client
+  17:49:08.330     --- Contents of ServerScriptService ---  -  Client
+  17:49:08.330  ✅ rbxts_include: Found (Folder)  -  Client
+  17:49:08.330  ❌ SwapBlocksEvent: NOT Found in ReplicatedStorage  -  Client
+  17:49:08.330  ❌ InitGameEvent: NOT Found in ReplicatedStorage  -  Client
+  17:49:08.330  ❌ HTTP Requests: DISABLED  -  Client
+  17:49:08.330  === Check Complete ===
+  -  Client
+  17:49:09.630  
+=== 🌈 Rainbow Cube Debug Check (Plugin) ===  -  Client
+  17:49:09.630  ❓ 'Server' folder not found in ServerScriptService  -  Client
+  17:49:09.630     --- Contents of ServerScriptService ---  -  Client
+  17:49:09.630  ✅ rbxts_include: Found (Folder)  -  Client
+  17:49:09.630  ❌ SwapBlocksEvent: NOT Found in ReplicatedStorage  -  Client
+  17:49:09.630  ❌ InitGameEvent: NOT Found in ReplicatedStorage  -  Client
+  17:49:09.631  ❌ HTTP Requests: DISABLED  -  Client
+  17:49:09.631  === Check Complete ===
+  -  Client
+  17:49:10.796  
+=== 🌈 Rainbow Cube Debug Check (Plugin) ===  -  Client
+  17:49:10.796  ❓ 'Server' folder not found in ServerScriptService  -  Client
+  17:49:10.796     --- Contents of ServerScriptService ---  -  Client
+  17:49:10.797  ✅ rbxts_include: Found (Folder)  -  Client
+  17:49:10.797  ❌ SwapBlocksEvent: NOT Found in ReplicatedStorage  -  Client
+  17:49:10.797  ❌ InitGameEvent: NOT Found in ReplicatedStorage  -  Client
+  17:49:10.797  ❌ HTTP Requests: DISABLED  -  Client
+  17:49:10.797  === Check Complete ===
+  -  Client
+  17:49:11.946  
+=== 🧪 Starting Auto Tests: 17:49:11 ===  -  Client
+  17:49:11.946  ❌ TEST 1 FAILED: 'Server' folder missing in ServerScriptService  -  Client
+  17:49:11.947  ⚠️  TEST 2 SKIPPED: Game is not running (Edit Mode). Please press Play to test cube generation.  -  Client
+  17:49:11.947  ❌ TEST 3 FAILED: HttpEnabled is false or inaccessible  -  Client
+  17:49:11.947  === 🏁 Auto Tests Complete ===
+  -  Client
+  17:49:13.130  
+=== 🧪 Starting Auto Tests: 17:49:13 ===  -  Client
+  17:49:13.131  ❌ TEST 1 FAILED: 'Server' folder missing in ServerScriptService  -  Client
+  17:49:13.131  ⚠️  TEST 2 SKIPPED: Game is not running (Edit Mode). Please press Play to test cube generation.  -  Client
+  17:49:13.131  ❌ TEST 3 FAILED: HttpEnabled is false or inaccessible  -  Client
+  17:49:13.131  === 🏁 Auto Tests Complete ===
+  -  Client
+  17:49:13.964  Checking Structure...  -  Client
