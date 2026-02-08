@@ -269,7 +269,7 @@ jobs:
       shell: pwsh
       run: |
         $ErrorActionPreference = "Stop"
-        $jobStatus = ${{ job.status }}
+        $jobStatus = "${{ job.status }}"
         Write-Output "Job completed with status: $jobStatus"
         
         if ($jobStatus -eq "success") {
