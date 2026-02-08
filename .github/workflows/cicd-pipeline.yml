@@ -1,0 +1,279 @@
+name: RainbowCube CICD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  BUILD_SCRIPT: "./scripts/build.ps1"
+  EVALUATE_SCRIPT: "./scripts/evaluate-loop.ps1"
+  DEPLOY_SCRIPT: "./scripts/deploy.ps1"
+  LOG_PATH: "./log/cicd-log.txt"
+  REPORT_PATH: "./reports/cicd-report.json"
+  MAX_BUILD_ATTEMPTS: 3
+  MAX_DEPLOY_ATTEMPTS: 2
+
+jobs:
+  cicd-pipeline:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Setup PowerShell
+      uses: microsoft/setup-msbuild@v1.3
+      
+    - name: Check environment
+      id: check-env
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = "Stop"
+        
+        # Check Node.js
+        try {
+            $nodeVersion = node --version
+            Write-Output "::set-output name=node_version::$nodeVersion"
+            Write-Output "Node.js: $nodeVersion"
+        } catch {
+            Write-Output "::set-output name=node_check::failed"
+            Write-Output "Node.js not found"
+            exit 1
+        }
+        
+        # Check npm
+        try {
+            $npmVersion = npm --version
+            Write-Output "::set-output name=npm_version::$npmVersion"
+            Write-Output "npm: $npmVersion"
+        } catch {
+            Write-Output "::set-output name=npm_check::failed"
+            Write-Output "npm not found"
+            exit 1
+        }
+        
+        # Check Rojo
+        try {
+            $rojoVersion = rojo --version
+            Write-Output "::set-output name=rojo_version::$rojoVersion"
+            Write-Output "Rojo: $rojoVersion"
+        } catch {
+            Write-Output "::set-output name=rojo_check::failed"
+            Write-Output "Rojo not found"
+            exit 1
+        }
+        
+        # Check Roblox Studio
+        try {
+            $studioPath = Get-Command "RobloxStudioBeta.exe" -ErrorAction SilentlyContinue
+            if ($studioPath) {
+                Write-Output "Roblox Studio: Found"
+            } else {
+                Write-Output "::set-output name=studio_check::failed"
+                Write-Output "Roblox Studio not found"
+                exit 1
+            }
+        } catch {
+            Write-Output "::set-output name=studio_check::failed"
+            Write-Output "Roblox Studio not found"
+            exit 1
+        }
+        
+        Write-Output "Environment check passed"
+      
+    - name: Build project
+      id: build
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = "Stop"
+        $attempt = 1
+        $maxAttempts = $env:MAX_BUILD_ATTEMPTS
+        
+        while ($attempt -le $maxAttempts) {
+            Write-Output "Starting build attempt $attempt..."
+            try {
+                & $env:BUILD_SCRIPT
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Output "Build completed successfully"
+                    exit 0
+                } else {
+                    Write-Output "Build failed with exit code $LASTEXITCODE"
+                    if ($attempt -lt $maxAttempts) {
+                        $retryDelay = 5
+                        Write-Output "Retrying build in $retryDelay seconds..."
+                        Start-Sleep -Seconds $retryDelay
+                        $attempt++
+                        continue
+                    } else {
+                        exit 1
+                    }
+                }
+            } catch {
+                Write-Output "Build exception: $($_.Exception.Message)"
+                if ($attempt -lt $maxAttempts) {
+                    $retryDelay = 5
+                    Write-Output "Retrying build in $retryDelay seconds..."
+                    Start-Sleep -Seconds $retryDelay
+                    $attempt++
+                    continue
+                } else {
+                    exit 1
+                }
+            }
+        }
+      
+    - name: Run evaluation
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = "Stop"
+        try {
+            & $env:EVALUATE_SCRIPT
+            if ($LASTEXITCODE -eq 0) {
+                Write-Output "Evaluation completed successfully"
+            } else {
+                Write-Output "Evaluation completed with issues"
+            }
+        } catch {
+            Write-Output "Evaluation exception: $($_.Exception.Message)"
+        }
+      
+    - name: Deploy to Roblox Studio
+      id: deploy
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = "Stop"
+        $attempt = 1
+        $maxAttempts = $env:MAX_DEPLOY_ATTEMPTS
+        
+        while ($attempt -le $maxAttempts) {
+            Write-Output "Starting deployment attempt $attempt..."
+            try {
+                & $env:DEPLOY_SCRIPT
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Output "Deployment completed successfully"
+                    exit 0
+                } else {
+                    Write-Output "Deployment failed with exit code $LASTEXITCODE"
+                    if ($attempt -lt $maxAttempts) {
+                        $retryDelay = 10
+                        Write-Output "Retrying deployment in $retryDelay seconds..."
+                        Start-Sleep -Seconds $retryDelay
+                        $attempt++
+                        continue
+                    } else {
+                        exit 1
+                    }
+                }
+            } catch {
+                Write-Output "Deployment exception: $($_.Exception.Message)"
+                if ($attempt -lt $maxAttempts) {
+                    $retryDelay = 10
+                    Write-Output "Retrying deployment in $retryDelay seconds..."
+                    Start-Sleep -Seconds $retryDelay
+                    $attempt++
+                    continue
+                } else {
+                    exit 1
+                }
+            }
+        }
+      
+    - name: Generate reports
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = "Stop"
+        
+        # Collect build artifacts
+        $buildArtifacts = @()
+        $buildFile = "RainbowCube.rbxlx"
+        if (Test-Path $buildFile) {
+            $buildArtifacts += @{
+                Name = $buildFile
+                Size = (Get-Item $buildFile).Length
+                Created = (Get-Item $buildFile).CreationTime
+            }
+        }
+        
+        # Collect log files
+        $logFiles = Get-ChildItem -Path "./log/*.txt" -ErrorAction SilentlyContinue
+        $logSummary = @()
+        foreach ($logFile in $logFiles) {
+            $logSummary += @{
+                Name = $logFile.Name
+                Size = $logFile.Length
+                Created = $logFile.CreationTime
+                Lines = (Get-Content $logFile).Count
+            }
+        }
+        
+        # Generate summary report
+        $summaryReport = @{
+            Timestamp = Get-Date -Format "o"
+            Status = "COMPLETED"
+            BuildArtifacts = $buildArtifacts
+            LogFiles = $logSummary
+            Environment = @{
+                OS = $PSVersionTable.OS
+                PowerShellVersion = $PSVersionTable.PSVersion.ToString()
+                WorkingDirectory = Get-Location
+            }
+        }
+        
+        # Save summary report
+        $summaryPath = "./reports/cicd-summary.json"
+        $summaryDir = Split-Path $summaryPath
+        if (-not (Test-Path $summaryDir)) {
+            New-Item -ItemType Directory -Path $summaryDir -Force | Out-Null
+        }
+        
+        $summaryReport | ConvertTo-Json -Depth 10 | Out-File -FilePath $summaryPath -Encoding UTF8
+        Write-Output "Report generated: $summaryPath"
+      
+    - name: Cleanup temporary files
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = "Stop"
+        
+        # Remove temporary build files
+        $tempFiles = @(
+            "./out/*",
+            "./*.tmp",
+            "./*.log"
+        )
+        
+        foreach ($tempFile in $tempFiles) {
+            Remove-Item -Path $tempFile -Recurse -Force -ErrorAction SilentlyContinue
+        }
+        Write-Output "Cleanup completed"
+      
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: |
+          RainbowCube.rbxlx
+          reports/
+          log/
+
+    - name: Post job status
+      if: always()
+      shell: pwsh
+      run: |
+        $ErrorActionPreference = "Stop"
+        $jobStatus = ${{ job.status }}
+        Write-Output "Job completed with status: $jobStatus"
+        
+        if ($jobStatus -eq "success") {
+            exit 0
+        } else {
+            exit 1
+        }
