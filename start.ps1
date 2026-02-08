@@ -54,6 +54,9 @@ function Show-Menu {
     Write-Host "  [6] Check Environment" -ForegroundColor White
     Write-Host "  [7] Test Luau Execution (Lune)" -ForegroundColor White
     Write-Host "  [8] Install Lune (Luau Runtime)" -ForegroundColor White
+    Write-Host "  [9] Install/Update Plugins" -ForegroundColor White
+    Write-Host "  [E] Evaluate Development Loop (Spec vs Code vs Log)" -ForegroundColor White
+    Write-Host "  [L] Start Debug Log Server" -ForegroundColor Yellow
     Write-Host "  [Q] Quit" -ForegroundColor Gray
     Write-Host ""
 }
@@ -129,6 +132,27 @@ while ($true) {
             Write-Host ""
             Write-Host "Press any key to continue..." -ForegroundColor Gray
             $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        }
+        "9" {
+            Write-Host ""
+            & ".\scripts\install-plugins.ps1"
+            Write-Host ""
+            Write-Host "Press any key to continue..." -ForegroundColor Gray
+            $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        }
+        "E" {
+            Write-Host ""
+            & ".\scripts\evaluate-loop.ps1"
+            Write-Host ""
+            Write-Host "Press any key to continue..." -ForegroundColor Gray
+            $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+        }
+        "L" {
+            Write-Host ""
+            Write-Host "Starting Log Server in new window..." -ForegroundColor Yellow
+            Start-Process powershell -ArgumentList "-ExecutionPolicy Bypass -NoExit -File .\scripts\log-server.ps1"
+            Write-Host "Done." -ForegroundColor Green
+            Write-Host ""
         }
         "Q" {
             exit

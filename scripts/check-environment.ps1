@@ -109,13 +109,14 @@ Write-Host "📦 Rojoプラグイン のチェック..." -ForegroundColor Green
 
 $pluginPaths = @(
     "$env:USERPROFILE\Downloads\Rojo.rbxm",
-    "$env:LOCALAPPDATA\Roblox\InstalledPlugins\Rojo.rbxm"
+    "$env:LOCALAPPDATA\Roblox\InstalledPlugins\Rojo.rbxm",
+    "$env:LOCALAPPDATA\Roblox\Plugins\RojoManagedPlugin.rbxm"
 )
 
 $pluginFound = $false
 foreach ($pluginPath in $pluginPaths) {
     if (Test-Path $pluginPath) {
-        Write-Host "  ✅ Rojoプラグイン ダウンロード済み" -ForegroundColor Green
+        Write-Host "  ✅ Rojoプラグイン 見つかりました" -ForegroundColor Green
         Write-Host "     場所: $pluginPath" -ForegroundColor Cyan
         $pluginFound = $true
         break
@@ -134,14 +135,27 @@ Write-Host ""
 # ========================================
 Write-Host "📦 Robloxプロジェクト のチェック..." -ForegroundColor Green
 
-$projects = Get-ChildItem -Path "J:\My Drive\ROB" -Directory -ErrorAction SilentlyContinue | Where-Object {
-    Test-Path (Join-Path $_.FullName "package.json")
+$projectPaths = @(
+    "J:\My Drive\ROB",
+    "c:\Users\dance\zone\ROB"
+)
+
+$projects = @()
+foreach ($path in $projectPaths) {
+    if (Test-Path $path) {
+        $found = Get-ChildItem -Path $path -Directory -ErrorAction SilentlyContinue | Where-Object {
+            Test-Path (Join-Path $_.FullName "package.json")
+        }
+        if ($found) {
+            $projects += $found
+        }
+    }
 }
 
 if ($projects.Count -gt 0) {
     Write-Host "  ✅ Robloxプロジェクト 見つかりました: $($projects.Count) 個" -ForegroundColor Green
     foreach ($project in $projects) {
-        Write-Host "     - $($project.Name)" -ForegroundColor Cyan
+        Write-Host "     - $($project.Name) ($($project.Parent.FullName))" -ForegroundColor Cyan
     }
 } else {
     Write-Host "  ⚠️  Robloxプロジェクト が見つかりませんでした" -ForegroundColor Yellow
