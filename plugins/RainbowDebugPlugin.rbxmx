@@ -1,0 +1,86 @@
+<roblox version="4">
+  <Item class="Folder" referent="0">
+    <Properties>
+      <string name="Name">RainbowDebugPlugin</string>
+    </Properties>
+    <Item class="Script" referent="1">
+      <Properties>
+        <string name="Name">RainbowDebugPlugin</string>
+        <token name="RunContext">0</token>
+        <string name="Source"><![CDATA[-- Rainbow Cube Debugger Plugin
+local toolbar = plugin:CreateToolbar("Rainbow Cube Debug")
+local button = toolbar:CreateButton("Check", "Check Project Structure", "rbxassetid://4458901886")
+
+button.Click:Connect(function()
+	print("\n=== 🌈 Rainbow Cube Debug Check (Plugin) ===")
+
+	local function check(label, parent, name)
+		if not parent then
+			print("❌ " .. label .. ": Parent is nil!")
+			return
+		end
+		local target = parent:FindFirstChild(name)
+		if target then
+			print("✅ " .. label .. ": Found (" .. target.ClassName .. ")")
+			if target.ClassName == "ModuleScript" or target.ClassName == "Script" then
+				-- SourceプロパティはPluginSecurityが必要なため、プラグインならアクセス可能
+				local success, len = pcall(function() return string.len(target.Source) end)
+				if success then
+					print("   -> Source length: " .. len)
+				else
+					print("   -> Source: (Protected)")
+				end
+			end
+		else
+			print("❌ " .. label .. ": NOT Found in " .. parent.Name)
+		end
+	end
+
+	-- 1. ServerScriptService の確認
+	local sss = game:GetService("ServerScriptService")
+	local serverFolder = sss:FindFirstChild("Server")
+
+	if serverFolder then
+		print("📂 Found 'Server' folder in ServerScriptService")
+		check("Grid Module", serverFolder, "grid")
+		check("Main Script", serverFolder, "main")
+		check("Match3 Module", serverFolder, "match3")
+
+		print("   --- Contents of ServerScriptService.Server ---")
+		for _, c in pairs(serverFolder:GetChildren()) do
+			print("   - " .. c.Name .. " (" .. c.ClassName .. ")")
+		end
+	else
+		print("❓ 'Server' folder not found in ServerScriptService")
+		print("   --- Contents of ServerScriptService ---")
+		for _, c in pairs(sss:GetChildren()) do
+			print("   - " .. c.Name .. " (" .. c.ClassName .. ")")
+		end
+	end
+
+	-- 2. ReplicatedStorage の確認
+	local rs = game:GetService("ReplicatedStorage")
+	check("rbxts_include", rs, "rbxts_include")
+	check("SwapBlocksEvent", rs, "SwapBlocksEvent")
+	check("InitGameEvent", rs, "InitGameEvent")
+
+    -- 3. HTTP設定の確認
+    local http = game:GetService("HttpService")
+    local success, enabled = pcall(function() return http.HttpEnabled end)
+    if success then
+        if enabled then
+            print("✅ HTTP Requests: Enabled")
+        else
+            print("❌ HTTP Requests: DISABLED")
+        end
+    else
+        print("⚠️ HTTP Requests: Could not check (Permission Denied)")
+    end
+
+	print("=== Check Complete ===\n")
+end)
+]]></string>
+      </Properties>
+    </Item>
+  </Item>
+</roblox>
