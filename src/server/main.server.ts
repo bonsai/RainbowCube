@@ -1,72 +1,52 @@
-// Rainbow Cube - Match-3 Game Server
+// Rainbow Tower Builder - Server Main Script
 
-import { ReplicatedStorage } from "@rbxts/services";
 import { GridManager } from "./grid";
-import { Match3Manager } from "./match3";
-import { SwapBlocksArgs } from "shared/types";
-import { AUTO_START_GAME } from "shared/constants";
+import { VictoryChecker } from "./victory";
+import { PlaceBlockArgs, DestroyBlockArgs } from "shared/types";
 
-// GridManagerとMatch3Managerを初期化
+// GridManagerとVictoryCheckerを初期化
 const gridManager = new GridManager();
-const match3Manager = new Match3Manager(gridManager);
+const victoryChecker = new VictoryChecker(gridManager);
 
 // RemoteEventsを作成
-const swapBlocksEvent = new Instance("RemoteEvent");
-swapBlocksEvent.Name = "SwapBlocksEvent";
-swapBlocksEvent.Parent = ReplicatedStorage;
+const placeBlockEvent = new Instance("RemoteEvent");
+placeBlockEvent.Name = "PlaceBlockEvent";
+placeBlockEvent.Parent = game.ReplicatedStorage;
 
-const getGameStateEvent = new Instance("RemoteFunction");
-getGameStateEvent.Name = "GetGameStateEvent";
-getGameStateEvent.Parent = ReplicatedStorage;
+const destroyBlockEvent = new Instance("RemoteEvent");
+destroyBlockEvent.Name = "DestroyBlockEvent";
+destroyBlockEvent.Parent = game.ReplicatedStorage;
 
-const initGameEvent = new Instance("RemoteEvent");
-initGameEvent.Name = "InitGameEvent";
-initGameEvent.Parent = ReplicatedStorage;
+// ブロック配置イベント
+placeBlockEvent.OnServerEvent.Connect((player, args: PlaceBlockArgs) => {
+	const { gridPos, colorIndex } = args;
 
-// ブロック交換イベント
-swapBlocksEvent.OnServerEvent.Connect((player, ...args) => {
-	const { gridPos1, gridPos2 } = args[0] as SwapBlocksArgs;
+	print(`[Server] PlaceBlock request from ${player.Name} at (${gridPos.x},${gridPos.y},${gridPos.z}) color=${colorIndex}`);
 
-	print(`[Server] SwapBlocks request from ${player.Name}`);
-	print(`  Position 1: (${gridPos1.x},${gridPos1.y},${gridPos1.z})`);
-	print(`  Position 2: (${gridPos2.x},${gridPos2.y},${gridPos2.z})`);
+	const success = gridManager.placeBlock(gridPos, colorIndex);
 
-	const cascadeResult = match3Manager.executeSwap(gridPos1, gridPos2);
-
-	if (cascadeResult) {
-		print(`[Server] Swap successful!`);
-		print(`  Matches: ${cascadeResult.matchedGroups.size()}`);
-		print(`  Score: ${cascadeResult.score}`);
-		print(`  Cascade depth: ${cascadeResult.cascadeDepth}`);
-
-		// ゲーム状態を全クライアントに送信
-		const gameState = match3Manager.getGameState();
-		print(`[Server] Total Score: ${gameState.score}, Moves: ${gameState.moves}, Matches: ${gameState.matchCount}`);
+	if (success) {
+		print(`[Server] Block placed successfully`);
+		// 配置後に勝利判定
+		victoryChecker.checkAndNotify();
 	} else {
-		print(`[Server] Swap failed (invalid move)`);
+		print(`[Server] Block placement failed (already exists)`);
 	}
 });
 
-// ゲーム状態取得
-getGameStateEvent.OnServerInvoke = () => {
-	return match3Manager.getGameState();
-};
+// ブロック破壊イベント
+destroyBlockEvent.OnServerEvent.Connect((player, args: DestroyBlockArgs) => {
+	const { gridPos } = args;
 
-// ゲーム初期化イベント
-initGameEvent.OnServerEvent.Connect((player) => {
-	print(`[Server] InitGame request from ${player.Name}`);
-	match3Manager.initializeGame();
-	print(`[Server] Game initialized with 9x9x9 grid`);
+	print(`[Server] DestroyBlock request from ${player.Name} at (${gridPos.x},${gridPos.y},${gridPos.z})`);
+
+	const success = gridManager.destroyBlock(gridPos);
+
+	if (success) {
+		print(`[Server] Block destroyed successfully`);
+	} else {
+		print(`[Server] Block destruction failed (does not exist)`);
+	}
 });
 
-// サーバー起動
-print("🌈 Rainbow Cube Match-3 Server Starting...");
-
-if (AUTO_START_GAME) {
-	print("[DEV] Auto-starting game (configured in constants)...");
-	task.wait(2); // サーバー起動待ち
-	match3Manager.initializeGame();
-}
-
-print("✓ Server ready!");
-print("✓ Waiting for players to start the game...");
+print("🌈 Rainbow Tower Builder Server Started!");

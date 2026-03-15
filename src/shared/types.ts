@@ -23,28 +23,3 @@ export interface PlaceBlockArgs {
 export interface DestroyBlockArgs {
 	gridPos: GridPosition;
 }
-
-export interface SwapBlocksArgs {
-	gridPos1: GridPosition;
-	gridPos2: GridPosition;
-}
-
-/** マッチグループ */
-export interface MatchGroup {
-	positions: GridPosition[];
-	colorIndex: number;
-}
-
-/** カスケード結果 */
-export interface CascadeResult {
-	matchedGroups: MatchGroup[];
-	score: number;
-	cascadeDepth: number;
-}
-
-/** ゲーム状態 */
-export interface GameState {
-	score: number;
-	moves: number;
-	matchCount: number;
-}

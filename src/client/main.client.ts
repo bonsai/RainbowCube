@@ -1,13 +1,12 @@
-// Rainbow Cube - Client Main Script (Match-3)
+// Rainbow Tower Builder - Client Main Script
 
-import { Players, ReplicatedStorage, RunService } from "@rbxts/services";
 import { UIManager } from "./ui";
 import { InputHandler } from "./input";
 import { GRID_SIZE, STUD_SIZE, GRID_CENTER_POSITION } from "shared/constants";
-import { GridPosition, GameState } from "shared/types";
+import { GridPosition } from "shared/types";
 
 // プレイヤーを取得
-const player = Players.LocalPlayer;
+const player = game.Players.LocalPlayer;
 
 if (!player) {
 	error("LocalPlayer not found!");
@@ -36,34 +35,16 @@ function worldToGrid(worldPos: Vector3): GridPosition | undefined {
 // InputHandlerにワールド→グリッド変換関数を設定
 inputHandler.setWorldToGridCallback(worldToGrid);
 
-// 選択変更時にUIを更新
-inputHandler.setSelectionChangedCallback((pos1, pos2) => {
-	const selectedCount = (pos1 ? 1 : 0) + (pos2 ? 1 : 0);
-	uiManager.updateSelectionInfo(selectedCount);
+// UIManagerの色選択をInputHandlerに連携
+uiManager.onColorSelected((colorIndex) => {
+	inputHandler.setSelectedColor(colorIndex);
 });
 
-// RemoteEventsを取得
-const getGameStateEvent = ReplicatedStorage.WaitForChild("GetGameStateEvent") as RemoteFunction;
-const initGameEvent = ReplicatedStorage.WaitForChild("InitGameEvent") as RemoteEvent;
-
-// スタートボタンクリック時の処理
-uiManager.setOnStartGameCallback(() => {
-	print("[Client] Sending init game request...");
-	initGameEvent.FireServer();
+// 勝利イベントのリスナー
+const victoryEvent = game.ReplicatedStorage.WaitForChild("VictoryEvent") as RemoteEvent;
+victoryEvent.OnClientEvent.Connect(() => {
+	print("[Client] Victory event received!");
+	uiManager.showVictory();
 });
 
-// ゲーム状態を定期的にポーリング
-RunService.Heartbeat.Connect(() => {
-	// 1秒に1回更新
-	if (tick() % 1 < 0.016) {
-		const [success, gameState] = pcall(() => {
-			return getGameStateEvent.InvokeServer() as GameState;
-		});
-
-		if (success && gameState) {
-			uiManager.updateGameState(gameState);
-		}
-	}
-});
-
-print("🌈 Rainbow Cube Match-3 Client Started!");
+print("🌈 Rainbow Tower Builder Client Started!");

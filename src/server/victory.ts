@@ -1,6 +1,5 @@
 // Rainbow Tower Builder - Victory Checker
 
-import { ReplicatedStorage } from "@rbxts/services";
 import { GRID_SIZE, BLOCKS_PER_LAYER } from "shared/constants";
 import { GridManager } from "./grid";
 
@@ -15,7 +14,7 @@ export class VictoryChecker {
 		// 勝利通知用のRemoteEventを作成
 		this.victoryEvent = new Instance("RemoteEvent");
 		this.victoryEvent.Name = "VictoryEvent";
-		this.victoryEvent.Parent = ReplicatedStorage;
+		this.victoryEvent.Parent = game.ReplicatedStorage;
 	}
 
 	/** 指定Y層のチェック（正しい色で全て埋まっているか） */
