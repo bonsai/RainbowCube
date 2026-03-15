@@ -1,21 +1,8 @@
-# Rojo state file
-.rojo-state
+# Project place file
+/ROB.rbxlx
 
-# Compiled output
-# out/
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock
 
-# Build output
-*.rbxlx
-*.rbxl
-
-# Node modules
-node_modules/
-
-# TypeScript cache
-*.tsbuildinfo
-
-# OS files
-.DS_Store
-Thumbs.db
-
-.bin/
+sourcemap.json
